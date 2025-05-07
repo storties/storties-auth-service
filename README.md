@@ -1,0 +1,1 @@
+# storties-auth-service
