@@ -1,6 +1,8 @@
 package storties.auth.stortiesauthservice.persistence.type;
 
-public enum OauthProvider {
+public enum AuthProvider {
+    LOCAL,
     GOOGLE,
-    GITHUB
+    GITHUB,
+    NAVER
 }

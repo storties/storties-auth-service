@@ -33,14 +33,14 @@ public class JwtTokenProvider {
     /**
      * 토큰 생성 시 Role은 String 형태로 저장됨
      * @param id 아이디
-     * @param userName 유저 이름
+     * @param email 유저 이름
      * @param role 권한
      * @return 토큰
      */
-    public String createAccessToken(Long id, String userName, Role role) {
+    public Map<String, Object> createAccessToken(Long id, String email, Role role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", String.valueOf(role));
-        claims.put("userName", userName);
+        claims.put("email", email);
         claims.put("id", id);
         claims.put("tokenType", String.valueOf(Token.ACCESS_TOKEN));
 
@@ -50,12 +50,19 @@ public class JwtTokenProvider {
         long validity = 1000 * 15 * 60;
         Date exp = new Date(now.getTime() + validity);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(exp)
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("expiresIn", validity / 1000);
+        response.put("expiresAt", exp);
+
+        return response;
     }
 
     /**
@@ -63,46 +70,62 @@ public class JwtTokenProvider {
      * @param id 아이디
      * @return 리프레시 토큰
      */
-    public String createRefreshToken(Long id) {
+    public Map<String, Object> createRefreshToken(Long id) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", id);
         claims.put("tokenType", String.valueOf(Token.REFRESH_TOKEN));
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
+        Date now = new Date();
+        long validity = 14 * 24 * 60 * 60 * 1000L;
+        Date exp = new Date(now.getTime() + validity);
+
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 14 * 24 * 60 * 60 * 1000L)) // 임시
+                .setIssuedAt(now)
+                .setExpiration(exp)
                 .signWith(SignatureAlgorithm.HS256, key) // 임시
                 .compact();
 
         String redisKey = "RT:" + id;
         redisTemplate.opsForValue().set(redisKey, refreshToken, Duration.ofDays(14));
 
-        return refreshToken;
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(exp)
+                .signWith(SignatureAlgorithm.HS256, key)
+                .compact();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("expiresIn", validity / 1000);
+        response.put("expiresAt", exp);
+
+        return response;
     }
 
     /**
      * 권한 가져오기
-     * @param accessToken - 엑세스 토큰
+     * @param accessToken 엑세스 토큰
      * @return 권한
      */
     public Authentication getAuthentication(String accessToken) {
-        String username = getUsername(accessToken);
+        String username = getEmailByAccessToken(accessToken);
         return new UsernamePasswordAuthenticationToken(username, "", List.of());
     }
 
-    public String getUsername(String accessToken) {
+    public String getEmailByAccessToken(String accessToken) {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
         JwtParser parser = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build();
 
-        return parser.parseClaimsJws(accessToken).getBody().get("userName", String.class);
+        return parser.parseClaimsJws(accessToken).getBody().get("email", String.class);
     }
 
-    public String getRole(String accessToken) {
+    public String getRoleByAccessToken(String accessToken) {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
         JwtParser parser = Jwts.parserBuilder()

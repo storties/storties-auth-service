@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash(value = "refreshToken", timeToLive = 1209600) // 임시
+@RedisHash(value = "token", timeToLive = 1209600) // 임시
 public class RefreshToken {
     @Id
     private String userId;
