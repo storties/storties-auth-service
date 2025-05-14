@@ -1,4 +1,4 @@
-package org.example.stortiesauthservice;
+package storties.auth.stortiesauthservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
