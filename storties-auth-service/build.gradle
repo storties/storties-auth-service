@@ -29,7 +29,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // util
-    implementation 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
     // auth
     implementation 'org.springframework.boot:spring-boot-starter-security'
