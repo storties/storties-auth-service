@@ -8,7 +8,8 @@ import storties.auth.stortiesauthservice.authentication.JwtTokenProvider;
 import storties.auth.stortiesauthservice.persistence.User;
 import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepository;
 import storties.auth.stortiesauthservice.service.dto.response.AccessTokenResponse;
-import storties.auth.stortiesauthservice.service.dto.response.JwtTokenResponse;
+import storties.auth.stortiesauthservice.service.util.JwtTokenUtil;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -21,8 +22,7 @@ public class ReissueService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final PasswordEncoder passwordEncoder;
-
+    private final JwtTokenUtil jwtTokenUtil;
 
     public AccessTokenResponse execute(String token){
 
@@ -33,11 +33,6 @@ public class ReissueService {
         User user = userJpaRepository.findById(jwtTokenProvider.getId(token))
                 .orElseThrow(RuntimeException::new);
 
-        Map<String, Object> accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getEmail(), user.getRole());
-
-        return AccessTokenResponse.builder()
-                .accessToken((String) accessToken.get("token"))
-                .accessTokenExpiresAt((Date) accessToken.get("expiresAt"))
-                .build();
+        return jwtTokenUtil.createAccessToken(user.getId(), user.getEmail(), user.getRole());
     }
 }
