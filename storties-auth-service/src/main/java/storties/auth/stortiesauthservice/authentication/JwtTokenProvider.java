@@ -1,9 +1,6 @@
 package storties.auth.stortiesauthservice.authentication;
 
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +19,25 @@ import java.util.Map;
  */
 @Component
 public class JwtTokenProvider {
-    private final String secret = "secretKeyfHeljfaosdjASDDFeefffHJFTDCVdsaklfjalsdkfjlasdkjfaldkf";
+    static private final String secret = "secretKeyfHeljfaosdjASDDFeefffHJFTDCVdsaklfjalsdkfjlasdkjfaldkf";
+
+    static private final String ROLE = "role";
+
+    static private final String EMAIL = "email";
+
+    static private final String ID = "id";
+
+    static private final String TOKEN_TYPE = "tokenType";
+
+    static private final String TOKEN = "token";
+
+    static private final String EXPIRES_IN = "expiresIn";
+
+    static private final String EXPIRES_AT = "expiresAt";
+
+    static private final String ACCESS_TOKEN = "ACCESS_TOKEN";
+
+    static private final String REFRESH_TOKEN = "REFRESH_TOKEN";
 
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -39,10 +54,10 @@ public class JwtTokenProvider {
      */
     public Map<String, Object> createAccessToken(Long id, String email, Role role) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", String.valueOf(role));
-        claims.put("email", email);
-        claims.put("id", id);
-        claims.put("tokenType", String.valueOf(Token.ACCESS_TOKEN));
+        claims.put(ROLE, String.valueOf(role));
+        claims.put(EMAIL, email);
+        claims.put(ID, id);
+        claims.put(TOKEN_TYPE, String.valueOf(Token.ACCESS_TOKEN));
 
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
@@ -58,9 +73,9 @@ public class JwtTokenProvider {
                 .compact();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-        response.put("expiresIn", validity / 1000);
-        response.put("expiresAt", exp);
+        response.put(TOKEN, token);
+        response.put(EXPIRES_IN, validity / 1000);
+        response.put(EXPIRES_AT, exp);
 
         return response;
     }
@@ -72,8 +87,8 @@ public class JwtTokenProvider {
      */
     public Map<String, Object> createRefreshToken(Long id) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", id);
-        claims.put("tokenType", String.valueOf(Token.REFRESH_TOKEN));
+        claims.put(ID, id);
+        claims.put(TOKEN_TYPE, String.valueOf(Token.REFRESH_TOKEN));
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
         Date now = new Date();
@@ -98,9 +113,9 @@ public class JwtTokenProvider {
                 .compact();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("token", token);
-        response.put("expiresIn", validity / 1000);
-        response.put("expiresAt", exp);
+        response.put(TOKEN, token);
+        response.put(EXPIRES_IN, validity / 1000);
+        response.put(EXPIRES_AT, exp);
 
         return response;
     }
@@ -122,7 +137,7 @@ public class JwtTokenProvider {
                 .setSigningKey(key)
                 .build();
 
-        return parser.parseClaimsJws(accessToken).getBody().get("email", String.class);
+        return parser.parseClaimsJws(accessToken).getBody().get(EMAIL, String.class);
     }
 
     public String getRoleByAccessToken(String accessToken) {
@@ -132,7 +147,7 @@ public class JwtTokenProvider {
                 .setSigningKey(key)
                 .build();
 
-        return parser.parseClaimsJws(accessToken).getBody().get("role", String.class);
+        return parser.parseClaimsJws(accessToken).getBody().get(ROLE, String.class);
     }
 
     public Long getId(String accessToken) {
@@ -142,7 +157,7 @@ public class JwtTokenProvider {
                 .setSigningKey(key)
                 .build();
 
-        return parser.parseClaimsJws(accessToken).getBody().get("id", Long.class);
+        return parser.parseClaimsJws(accessToken).getBody().get(ID, Long.class);
     }
 
     public boolean validateAccessToken(String accessToken) {
@@ -158,9 +173,9 @@ public class JwtTokenProvider {
 
             if (isExpired) return false;
 
-            String tokenType = parser.parseClaimsJws(accessToken).getBody().get("tokenType", String.class);
+            String tokenType = parser.parseClaimsJws(accessToken).getBody().get(TOKEN_TYPE, String.class);
 
-            return tokenType.equals("ACCESS_TOKEN");
+            return tokenType.equals(ACCESS_TOKEN);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
@@ -180,8 +195,8 @@ public class JwtTokenProvider {
 
             if (isExpired) return false;
 
-            String tokenType = parser.parseClaimsJws(refreshToken).getBody().get("tokenType", String.class);
-            return tokenType.equals("REFRESH_TOKEN");
+            String tokenType = parser.parseClaimsJws(refreshToken).getBody().get(TOKEN_TYPE, String.class);
+            return tokenType.equals(REFRESH_TOKEN);
         } catch (JwtException e) {
             return false;
         }

@@ -8,7 +8,7 @@ import storties.auth.stortiesauthservice.service.RegisterLocalUserService;
 import storties.auth.stortiesauthservice.service.ReissueService;
 import storties.auth.stortiesauthservice.service.dto.request.AuthUserRequest;
 import storties.auth.stortiesauthservice.service.dto.response.AccessTokenResponse;
-import storties.auth.stortiesauthservice.service.dto.response.JwtTokenResponse;
+import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,14 +20,14 @@ public class AuthController {
     private final ReissueService reissueService;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtTokenResponse> login(@RequestBody AuthUserRequest request) {
-        JwtTokenResponse response = loginService.execute(request);
+    public ResponseEntity<AllTokenResponse> login(@RequestBody AuthUserRequest request) {
+        AllTokenResponse response = loginService.execute(request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JwtTokenResponse> register(@RequestBody AuthUserRequest request) {
-        JwtTokenResponse response = registerLocalUserService.execute(request);
+    public ResponseEntity<AllTokenResponse> register(@RequestBody AuthUserRequest request) {
+        AllTokenResponse response = registerLocalUserService.execute(request);
         return ResponseEntity.ok(response);
     }
 
