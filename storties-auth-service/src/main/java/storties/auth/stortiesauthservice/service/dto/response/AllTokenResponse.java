@@ -8,7 +8,7 @@ import java.util.Date;
 @Getter
 @Builder
 @AllArgsConstructor
-public class JwtTokenResponse {
+public class AllTokenResponse {
 
     private String accessToken;
 

@@ -8,9 +8,9 @@ import storties.auth.stortiesauthservice.authentication.JwtTokenProvider;
 import storties.auth.stortiesauthservice.persistence.User;
 import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepository;
 import storties.auth.stortiesauthservice.service.dto.request.AuthUserRequest;
-import storties.auth.stortiesauthservice.service.dto.response.JwtTokenResponse;
+import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
+import storties.auth.stortiesauthservice.service.util.JwtTokenUtil;
 
-import javax.swing.text.html.Option;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
@@ -24,9 +24,9 @@ public class LoginService {
 
     private final UserJpaRepository userJpaRepository;
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    public JwtTokenResponse execute(AuthUserRequest authUserRequest){
+    public AllTokenResponse execute(AuthUserRequest authUserRequest){
 
         User user = Optional.ofNullable(userJpaRepository.findByEmail(authUserRequest.getEmail()))
                 .orElseThrow(RuntimeException::new);
@@ -35,14 +35,6 @@ public class LoginService {
             throw new IllegalArgumentException("비밀번호 불일치");
         }
 
-        Map<String, Object> refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
-        Map<String, Object> accessToken = jwtTokenProvider.createAccessToken(user.getId(), user.getEmail(), user.getRole());
-
-        return JwtTokenResponse.builder()
-                .accessToken((String) accessToken.get("token"))
-                .accessTokenExpiresAt((Date) accessToken.get("expiresAt"))
-                .refreshToken((String) refreshToken.get("token"))
-                .refreshTokenExpiresAt((Date) refreshToken.get("expiresAt"))
-                .build();
+        return jwtTokenUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());
     }
 }
