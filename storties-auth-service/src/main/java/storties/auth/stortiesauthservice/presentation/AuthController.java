@@ -1,14 +1,18 @@
 package storties.auth.stortiesauthservice.presentation;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import storties.auth.stortiesauthservice.service.LoginService;
 import storties.auth.stortiesauthservice.service.RegisterLocalUserService;
 import storties.auth.stortiesauthservice.service.ReissueService;
 import storties.auth.stortiesauthservice.service.dto.request.AuthUserRequest;
 import storties.auth.stortiesauthservice.service.dto.response.AccessTokenResponse;
 import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +41,16 @@ public class AuthController {
         String token = refreshToken.replace("Bearer ", "");
         AccessTokenResponse response = reissueService.execute(token);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/oauth/{provider}")
+    public ResponseEntity<Map<String, String>> redirectToProvider(
+            @PathVariable String provider) {
+
+        String redirectUri = UriComponentsBuilder.fromUriString("http://localhost:8080/oauth2/authorization/" + provider)
+                .build()
+                .toString();
+
+        return ResponseEntity.ok(Map.of("url", redirectUri));
     }
 }
