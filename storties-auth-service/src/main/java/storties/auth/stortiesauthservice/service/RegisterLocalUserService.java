@@ -37,7 +37,6 @@ public class RegisterLocalUserService {
                 .authProvider(AuthProvider.LOCAL)
                 .email(request.getEmail())
                 .role(Role.USER)
-                .createdAt(LocalDateTime.now())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build());
 

@@ -28,13 +28,13 @@ public class LoginService {
 
     public AllTokenResponse execute(AuthUserRequest authUserRequest){
 
-        User user = Optional.ofNullable(userJpaRepository.findByEmail(authUserRequest.getEmail()))
-                .orElseThrow(RuntimeException::new);
+        Optional<User> user = Optional.of(userJpaRepository.findByEmail(authUserRequest.getEmail())
+                .orElseThrow());
 
-        if(!passwordEncoder.matches(authUserRequest.getPassword(), user.getPassword())) {
+        if(!passwordEncoder.matches(authUserRequest.getPassword(), user.get().getPassword())) {
             throw new IllegalArgumentException("비밀번호 불일치");
         }
 
-        return jwtTokenUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());
+        return jwtTokenUtil.createAllToken(user.get().getId(), user.get().getEmail(), user.get().getRole());
     }
 }
