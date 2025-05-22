@@ -10,8 +10,8 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class AccessTokenResponse {
+
     private String accessToken;
 
     private Date accessTokenExpiresAt;
-
 }

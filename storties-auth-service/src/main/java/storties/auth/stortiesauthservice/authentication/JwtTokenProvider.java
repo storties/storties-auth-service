@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import storties.auth.stortiesauthservice.authentication.token.Token;
 import storties.auth.stortiesauthservice.persistence.type.Role;
 import javax.crypto.SecretKey;
 import java.time.Duration;
@@ -17,6 +18,8 @@ import java.util.Map;
 /**
  * 토큰 생성 밑 파싱
  */
+
+// todo 리펙토링 할게 참 많다....
 @Component
 public class JwtTokenProvider {
     static private final String secret = "secretKeyfHeljfaosdjASDDFeefffHJFTDCVdsaklfjalsdkfjlasdkjfaldkf";
@@ -130,10 +133,10 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(username, "", List.of());
     }
 
-    public String getEmailByAccessToken(String accessToken) {
+    public String getEmailByAccessToken(String accessToken) { // todo 토큰 파싱 해서 정보 얻는 부분은 클래스 분리하자
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
-        JwtParser parser = Jwts.parserBuilder()
+        JwtParser parser = Jwts.parserBuilder() // 이부분이 겹치네.. 메소드로 따로 만들 것
                 .setSigningKey(key)
                 .build();
 

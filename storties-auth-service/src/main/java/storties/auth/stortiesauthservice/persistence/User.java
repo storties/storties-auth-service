@@ -43,6 +43,7 @@ public class User {
     @Column(name = "oauth_provider_id", nullable = true)
     private String oauthProviderId;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 }

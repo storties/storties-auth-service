@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.authentication;
+package storties.auth.stortiesauthservice.authentication.token;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
