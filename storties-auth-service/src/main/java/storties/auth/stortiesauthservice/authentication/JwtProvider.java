@@ -17,7 +17,6 @@ import java.util.Map;
  * 토큰 생성 밑 파싱
  */
 
-// todo 리펙토링 할게 참 많다....
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
