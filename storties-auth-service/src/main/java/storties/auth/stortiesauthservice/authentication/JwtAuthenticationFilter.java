@@ -1,35 +1,31 @@
 package storties.auth.stortiesauthservice.authentication;
 
-import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider provider;
-
-    public JwtAuthenticationFilter(JwtTokenProvider provider) {
-        this.provider = provider;
-    }
+    private final JwtParser jwtParser;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         String token = resolveToken(request);
-        if (token != null && provider.validateAccessToken(token)) {
-            Authentication auth = provider.getAuthentication(token);
-            // 이렇게 변경
+        if (token != null && jwtParser.validateAccessToken(token)) {
+            Authentication auth = jwtParser.getAuthentication(token);
+
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(auth);
             SecurityContextHolder.setContext(context);

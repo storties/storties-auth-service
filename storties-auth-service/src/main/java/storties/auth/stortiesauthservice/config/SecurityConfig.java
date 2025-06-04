@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import storties.auth.stortiesauthservice.authentication.JwtAuthenticationFilter;
-import storties.auth.stortiesauthservice.authentication.JwtTokenProvider;
+import storties.auth.stortiesauthservice.authentication.JwtParser;
 import storties.auth.stortiesauthservice.authentication.oauth.Oauth2SuccessHandler;
 
 @EnableWebSecurity
@@ -22,7 +22,7 @@ import storties.auth.stortiesauthservice.authentication.oauth.Oauth2SuccessHandl
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtParser jwtParser;
 
     private final Oauth2SuccessHandler oauth2SuccessHandler;
 
@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2SuccessHandler)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtParser), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
