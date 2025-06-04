@@ -4,15 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import storties.auth.stortiesauthservice.authentication.JwtTokenProvider;
 import storties.auth.stortiesauthservice.persistence.User;
 import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepository;
 import storties.auth.stortiesauthservice.service.dto.request.AuthUserRequest;
 import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
-import storties.auth.stortiesauthservice.service.util.JwtTokenUtil;
+import storties.auth.stortiesauthservice.service.util.JwtUtil;
 
-import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,7 +21,7 @@ public class LoginService {
 
     private final UserJpaRepository userJpaRepository;
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtUtil jwtUtil;
 
     public AllTokenResponse execute(AuthUserRequest authUserRequest){
 
@@ -35,6 +32,6 @@ public class LoginService {
             throw new IllegalArgumentException("비밀번호 불일치");
         }
 
-        return jwtTokenUtil.createAllToken(user.get().getId(), user.get().getEmail(), user.get().getRole());
+        return jwtUtil.createAllToken(user.get().getId(), user.get().getEmail(), user.get().getRole());
     }
 }

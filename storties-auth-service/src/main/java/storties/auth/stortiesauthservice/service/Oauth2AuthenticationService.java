@@ -9,13 +9,13 @@ import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepositor
 import storties.auth.stortiesauthservice.persistence.type.AuthProvider;
 import storties.auth.stortiesauthservice.persistence.type.Role;
 import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
-import storties.auth.stortiesauthservice.service.util.JwtTokenUtil;
+import storties.auth.stortiesauthservice.service.util.JwtUtil;
 
 @Service
 @RequiredArgsConstructor
 public class Oauth2AuthenticationService {
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtUtil jwtUtil;
 
     private final UserJpaRepository userJpaRepository;
 
@@ -32,6 +32,6 @@ public class Oauth2AuthenticationService {
                         .authProvider(AuthProvider.GOOGLE)
                         .build()));
 
-        return jwtTokenUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());
+        return jwtUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());
     }
 }
