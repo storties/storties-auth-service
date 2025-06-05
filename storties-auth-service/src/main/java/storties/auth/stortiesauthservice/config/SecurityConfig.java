@@ -1,5 +1,6 @@
 package storties.auth.stortiesauthservice.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import storties.auth.stortiesauthservice.authentication.JwtAuthenticationFilter;
 import storties.auth.stortiesauthservice.authentication.JwtParser;
 import storties.auth.stortiesauthservice.authentication.oauth.Oauth2SuccessHandler;
+import storties.auth.stortiesauthservice.exception.ExceptionFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -37,6 +39,9 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2SuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                                response.sendRedirect("/login?error=oauth2");
+                            })
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtParser), UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -50,5 +55,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ExceptionFilter exceptionFilter() {
+        return new ExceptionFilter(new ObjectMapper());
     }
 }
