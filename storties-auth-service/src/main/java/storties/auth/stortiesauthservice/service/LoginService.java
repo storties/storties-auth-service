@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import storties.auth.stortiesauthservice.global.exception.error.ErrorCodes;
+import storties.auth.stortiesauthservice.global.exception.StortiesException;
 import storties.auth.stortiesauthservice.persistence.User;
 import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepository;
 import storties.auth.stortiesauthservice.service.dto.request.AuthUserRequest;
 import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
 import storties.auth.stortiesauthservice.service.util.JwtUtil;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,15 +23,15 @@ public class LoginService {
 
     private final JwtUtil jwtUtil;
 
-    public AllTokenResponse execute(AuthUserRequest authUserRequest){
+    public AllTokenResponse execute(AuthUserRequest authUserRequest) {
 
-        Optional<User> user = Optional.of(userJpaRepository.findByEmail(authUserRequest.getEmail())
-                .orElseThrow());
+        User user = userJpaRepository.findByEmail(authUserRequest.getEmail())
+                .orElseThrow(() -> new StortiesException(ErrorCodes.USER_NOT_FOUND));
 
-        if(!passwordEncoder.matches(authUserRequest.getPassword(), user.get().getPassword())) {
-            throw new IllegalArgumentException("비밀번호 불일치");
+        if(!passwordEncoder.matches(authUserRequest.getPassword(), user.getPassword())) {
+            throw new StortiesException(ErrorCodes.PASSWORD_MISMATCH);
         }
 
-        return jwtUtil.createAllToken(user.get().getId(), user.get().getEmail(), user.get().getRole());
+        return jwtUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());
     }
 }
