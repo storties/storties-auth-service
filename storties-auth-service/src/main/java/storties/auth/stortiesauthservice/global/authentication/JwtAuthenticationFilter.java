@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.authentication;
+package storties.auth.stortiesauthservice.global.authentication;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,15 +16,15 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtParser jwtParser;
+    private final JwtTokenParser jwtTokenParser;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         String token = resolveToken(request);
-        if (token != null && jwtParser.validateAccessToken(token)) {
-            Authentication auth = jwtParser.getAuthentication(token);
+        if (token != null && jwtTokenParser.validateAccessToken(token)) {
+            Authentication auth = jwtTokenParser.getAuthentication(token);
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(auth);

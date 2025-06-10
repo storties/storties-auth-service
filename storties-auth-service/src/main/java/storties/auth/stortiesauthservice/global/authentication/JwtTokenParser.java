@@ -1,10 +1,9 @@
-package storties.auth.stortiesauthservice.authentication;
+package storties.auth.stortiesauthservice.global.authentication;
 
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -14,12 +13,18 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
-public class JwtParser {
-
-    private final RedisTemplate<String, String> redisTemplate;
+public class JwtTokenParser {
 
     private final JwtProperties jwtProperties;
+
+    private final JwtParser jwtParser;
+
+    public JwtTokenParser(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+        
+        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.SECRET.getBytes());
+        this.jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
+    }
 
     /**
      * 권한 가져오기
@@ -31,34 +36,16 @@ public class JwtParser {
         return new UsernamePasswordAuthenticationToken(username, "", List.of());
     }
 
-    public String getEmailByAccessToken(String accessToken) { // todo 토큰 파싱 해서 정보 얻는 부분은 클래스 분리하자
-        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.SECRET.getBytes());
-
-        io.jsonwebtoken.JwtParser parser = Jwts.parserBuilder() // 이부분이 겹치네.. 메소드로 따로 만들 것
-                .setSigningKey(key)
-                .build();
-
-        return parser.parseClaimsJws(accessToken).getBody().get(JwtProperties.EMAIL, String.class);
+    public String getEmailByAccessToken(String accessToken) {
+        return jwtParser.parseClaimsJws(accessToken).getBody().get(JwtProperties.EMAIL, String.class);
     }
 
     public String getRoleByAccessToken(String accessToken) {
-        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.SECRET.getBytes());
-
-        io.jsonwebtoken.JwtParser parser = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build();
-
-        return parser.parseClaimsJws(accessToken).getBody().get(JwtProperties.ROLE, String.class);
+        return jwtParser.parseClaimsJws(accessToken).getBody().get(JwtProperties.ROLE, String.class);
     }
 
     public Long getId(String accessToken) {
-        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.SECRET.getBytes());
-
-        io.jsonwebtoken.JwtParser parser = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build();
-
-        return parser.parseClaimsJws(accessToken).getBody().get(JwtProperties.ID, Long.class);
+        return jwtParser.parseClaimsJws(accessToken).getBody().get(JwtProperties.ID, Long.class);
     }
 
     public boolean validateAccessToken(String accessToken) {

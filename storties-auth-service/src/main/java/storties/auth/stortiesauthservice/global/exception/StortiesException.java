@@ -1,8 +1,8 @@
-package storties.auth.stortiesauthservice.exception;
+package storties.auth.stortiesauthservice.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import storties.auth.stortiesauthservice.error.ErrorCodes;
+import storties.auth.stortiesauthservice.global.exception.error.ErrorCodes;
 
 @Getter
 @RequiredArgsConstructor

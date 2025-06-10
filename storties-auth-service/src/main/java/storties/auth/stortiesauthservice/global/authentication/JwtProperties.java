@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.authentication;
+package storties.auth.stortiesauthservice.global.authentication;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

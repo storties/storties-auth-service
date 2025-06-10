@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.exception;
+package storties.auth.stortiesauthservice.global.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
-import storties.auth.stortiesauthservice.error.ErrorCodes;
-import storties.auth.stortiesauthservice.error.ErrorResponse;
+import storties.auth.stortiesauthservice.global.exception.error.ErrorCodes;
+import storties.auth.stortiesauthservice.global.exception.error.ErrorResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 

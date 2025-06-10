@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.authentication.oauth;
+package storties.auth.stortiesauthservice.global.authentication.oauth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;

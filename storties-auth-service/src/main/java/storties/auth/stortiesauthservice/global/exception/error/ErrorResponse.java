@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.error;
+package storties.auth.stortiesauthservice.global.exception.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
