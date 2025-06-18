@@ -60,7 +60,7 @@ public class JwtTokenParser {
             Date expiration = parser.parseClaimsJws(accessToken).getBody().getExpiration();
             boolean isExpired = expiration.before(new Date());
 
-            if (isExpired) return false;
+            if (isExpired) throw ErrorCodes.TOKEN_EXPIRED.throwException();
 
             String tokenType = parser.parseClaimsJws(accessToken).getBody().get(JwtProperties.TOKEN_TYPE, String.class);
 
