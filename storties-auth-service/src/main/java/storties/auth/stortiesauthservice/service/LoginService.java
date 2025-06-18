@@ -26,10 +26,10 @@ public class LoginService {
     public AllTokenResponse execute(AuthUserRequest authUserRequest) {
 
         User user = userJpaRepository.findByEmail(authUserRequest.getEmail())
-                .orElseThrow(() -> new StortiesException(ErrorCodes.USER_NOT_FOUND));
+                .orElseThrow(ErrorCodes.EMAIL_ALREADY_EXIST::throwException);
 
         if(!passwordEncoder.matches(authUserRequest.getPassword(), user.getPassword())) {
-            throw new StortiesException(ErrorCodes.PASSWORD_MISMATCH);
+            throw ErrorCodes.PASSWORD_MISMATCH.throwException();
         }
 
         return jwtUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());

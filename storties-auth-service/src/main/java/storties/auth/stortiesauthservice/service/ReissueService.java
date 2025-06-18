@@ -29,7 +29,7 @@ public class ReissueService {
         }
 
         User user = userJpaRepository.findById(jwtTokenParser.getId(token))
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(ErrorCodes.USER_NOT_FOUND::throwException);
 
         return jwtUtil.createAccessToken(user.getId(), user.getEmail(), user.getRole());
     }

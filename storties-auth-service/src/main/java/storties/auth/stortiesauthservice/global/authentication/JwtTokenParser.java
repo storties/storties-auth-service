@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import storties.auth.stortiesauthservice.global.exception.error.ErrorCodes;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -69,8 +70,7 @@ public class JwtTokenParser {
         }
     }
 
-    // todo [401 expired] 추가 해야함
-    public boolean validateRefreshToken(String refreshToken) { // Expired 확인 필요(수정 필요)
+    public boolean validateRefreshToken(String refreshToken) {
         try {
             SecretKey key = Keys.hmacShaKeyFor(jwtProperties.SECRET.getBytes());
 
@@ -81,7 +81,7 @@ public class JwtTokenParser {
             Date expiration = parser.parseClaimsJws(refreshToken).getBody().getExpiration();
             boolean isExpired = expiration.before(new Date());
 
-            if (isExpired) return false;
+            if (isExpired) throw ErrorCodes.TOKEN_EXPIRED.throwException();
 
             String tokenType = parser.parseClaimsJws(refreshToken).getBody().get(JwtProperties.TOKEN_TYPE, String.class);
             return tokenType.equals(JwtProperties.REFRESH_TOKEN);
