@@ -1,5 +1,6 @@
-package storties.auth.stortiesauthservice.config;
+package storties.auth.stortiesauthservice.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,16 +14,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import storties.auth.stortiesauthservice.authentication.JwtAuthenticationFilter;
-import storties.auth.stortiesauthservice.authentication.JwtParser;
-import storties.auth.stortiesauthservice.authentication.oauth.Oauth2SuccessHandler;
+import storties.auth.stortiesauthservice.global.authentication.JwtAuthenticationFilter;
+import storties.auth.stortiesauthservice.global.authentication.JwtTokenParser;
+import storties.auth.stortiesauthservice.global.authentication.oauth.Oauth2SuccessHandler;
+import storties.auth.stortiesauthservice.global.exception.ExceptionFilter;
 
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtParser jwtParser;
+    private final JwtTokenParser jwtTokenParser;
 
     private final Oauth2SuccessHandler oauth2SuccessHandler;
 
@@ -37,8 +39,11 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2SuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                                response.sendRedirect("/login?error=oauth2");
+                            })
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtParser), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenParser), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -50,5 +55,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public ExceptionFilter exceptionFilter() {
+        return new ExceptionFilter(new ObjectMapper());
     }
 }

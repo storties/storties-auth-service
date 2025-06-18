@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.config;
+package storties.auth.stortiesauthservice.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

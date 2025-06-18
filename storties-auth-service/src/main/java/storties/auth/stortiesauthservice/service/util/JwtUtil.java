@@ -2,7 +2,7 @@ package storties.auth.stortiesauthservice.service.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import storties.auth.stortiesauthservice.authentication.JwtProvider;
+import storties.auth.stortiesauthservice.global.authentication.JwtProvider;
 import storties.auth.stortiesauthservice.persistence.type.Role;
 import storties.auth.stortiesauthservice.service.dto.response.AccessTokenResponse;
 import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
