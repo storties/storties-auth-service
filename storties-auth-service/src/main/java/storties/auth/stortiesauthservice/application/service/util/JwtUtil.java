@@ -1,11 +1,11 @@
-package storties.auth.stortiesauthservice.service.util;
+package storties.auth.stortiesauthservice.application.service.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import storties.auth.stortiesauthservice.global.authentication.JwtProvider;
 import storties.auth.stortiesauthservice.persistence.type.Role;
-import storties.auth.stortiesauthservice.service.dto.response.AccessTokenResponse;
-import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
+import storties.auth.stortiesauthservice.application.service.dto.response.AccessTokenResponse;
+import storties.auth.stortiesauthservice.application.service.dto.response.AllTokenResponse;
 
 import java.util.Date;
 import java.util.Map;
@@ -21,9 +21,9 @@ public class JwtUtil {
     static private final String EXPIRES_AT = "expiresAt";
 
 
-    public AllTokenResponse createAllToken(Long id, String email, Role role) {
+    public AllTokenResponse createAllToken(Long id, Role role) {
         Map<String, Object> refreshToken = jwtProvider.createRefreshToken(id);
-        Map<String, Object> accessToken = jwtProvider.createAccessToken(id, email, role);
+        Map<String, Object> accessToken = jwtProvider.createAccessToken(id, role);
 
         return AllTokenResponse.builder()
                 .accessToken((String) accessToken.get(TOKEN))
@@ -33,8 +33,8 @@ public class JwtUtil {
                 .build();
     }
 
-    public AccessTokenResponse createAccessToken(Long id, String email, Role role) {
-        Map<String, Object> accessToken = jwtProvider.createAccessToken(id, email, role);
+    public AccessTokenResponse createAccessToken(Long id, Role role) {
+        Map<String, Object> accessToken = jwtProvider.createAccessToken(id, role);
 
         return AccessTokenResponse.builder()
                 .accessToken((String) accessToken.get(TOKEN))

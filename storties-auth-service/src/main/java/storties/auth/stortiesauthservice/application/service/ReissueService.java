@@ -1,14 +1,14 @@
-package storties.auth.stortiesauthservice.service;
+package storties.auth.stortiesauthservice.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import storties.auth.stortiesauthservice.application.service.dto.response.AccessTokenResponse;
+import storties.auth.stortiesauthservice.application.service.util.JwtUtil;
 import storties.auth.stortiesauthservice.global.authentication.JwtTokenParser;
 import storties.auth.stortiesauthservice.global.exception.error.ErrorCodes;
 import storties.auth.stortiesauthservice.persistence.User;
 import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepository;
-import storties.auth.stortiesauthservice.service.dto.response.AccessTokenResponse;
-import storties.auth.stortiesauthservice.service.util.JwtUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +31,6 @@ public class ReissueService {
         User user = userJpaRepository.findById(jwtTokenParser.getId(token))
                 .orElseThrow(ErrorCodes.USER_NOT_FOUND::throwException);
 
-        return jwtUtil.createAccessToken(user.getId(), user.getEmail(), user.getRole());
+        return jwtUtil.createAccessToken(user.getId(), user.getRole());
     }
 }

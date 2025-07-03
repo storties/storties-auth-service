@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.service.dto.request;
+package storties.auth.stortiesauthservice.application.service.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,15 +1,15 @@
-package storties.auth.stortiesauthservice.service;
+package storties.auth.stortiesauthservice.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import storties.auth.stortiesauthservice.application.service.util.JwtUtil;
 import storties.auth.stortiesauthservice.persistence.User;
 import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepository;
 import storties.auth.stortiesauthservice.persistence.type.AuthProvider;
 import storties.auth.stortiesauthservice.persistence.type.Role;
-import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
-import storties.auth.stortiesauthservice.service.util.JwtUtil;
+import storties.auth.stortiesauthservice.application.service.dto.response.AllTokenResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +32,6 @@ public class Oauth2AuthenticationService {
                         .authProvider(AuthProvider.GOOGLE)
                         .build()));
 
-        return jwtUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());
+        return jwtUtil.createAllToken(user.getId(), user.getRole());
     }
 }
