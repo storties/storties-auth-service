@@ -19,6 +19,8 @@ import storties.auth.stortiesauthservice.global.authentication.JwtTokenParser;
 import storties.auth.stortiesauthservice.global.authentication.oauth.Oauth2SuccessHandler;
 import storties.auth.stortiesauthservice.global.exception.ExceptionFilter;
 
+import static storties.auth.stortiesauthservice.persistence.type.Role.USER;
+
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
@@ -31,20 +33,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll()
-                        .anyRequest().authenticated()
+            .csrf(AbstractHttpConfigurer::disable)
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/test").hasAuthority(USER.name())
+                    .requestMatchers("/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll()
+                    .anyRequest().authenticated()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                    .successHandler(oauth2SuccessHandler)
+                    .failureHandler((request, response, exception) -> {
+                        response.sendRedirect("/login?error=oauth2");
+                    })
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oauth2SuccessHandler)
-                        .failureHandler((request, response, exception) -> {
-                                response.sendRedirect("/login?error=oauth2");
-                            })
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenParser), UsernamePasswordAuthenticationFilter.class)
-                .build();
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenParser), UsernamePasswordAuthenticationFilter.class)
+            .build();
     }
 
     @Bean

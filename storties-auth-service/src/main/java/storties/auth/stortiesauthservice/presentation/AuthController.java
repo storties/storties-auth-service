@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import storties.auth.stortiesauthservice.service.LoginService;
-import storties.auth.stortiesauthservice.service.Oauth2RedirectService;
-import storties.auth.stortiesauthservice.service.RegisterLocalUserService;
-import storties.auth.stortiesauthservice.service.ReissueService;
-import storties.auth.stortiesauthservice.service.dto.request.AuthUserRequest;
-import storties.auth.stortiesauthservice.service.dto.response.AccessTokenResponse;
-import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
+import storties.auth.stortiesauthservice.application.service.LoginService;
+import storties.auth.stortiesauthservice.application.service.Oauth2RedirectService;
+import storties.auth.stortiesauthservice.application.service.RegisterLocalUserService;
+import storties.auth.stortiesauthservice.application.service.ReissueService;
+import storties.auth.stortiesauthservice.application.service.dto.request.AuthUserRequest;
+import storties.auth.stortiesauthservice.application.service.dto.response.AccessTokenResponse;
+import storties.auth.stortiesauthservice.application.service.dto.response.AllTokenResponse;
 import java.util.Map;
 
 @RestController
