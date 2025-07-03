@@ -17,8 +17,6 @@ public class JwtProperties {
 
     static public final String ROLE = "role";
 
-    static public final String EMAIL = "email";
-
     static public final String ID = "id";
 
     static public final String TOKEN_TYPE = "tokenType";

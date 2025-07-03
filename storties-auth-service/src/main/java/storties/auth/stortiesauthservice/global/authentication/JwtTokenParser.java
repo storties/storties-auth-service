@@ -6,12 +6,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import storties.auth.stortiesauthservice.global.exception.error.ErrorCodes;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.List;
+import storties.auth.stortiesauthservice.persistence.type.Role;
 
 @Component
 public class JwtTokenParser {
@@ -33,12 +35,10 @@ public class JwtTokenParser {
      * @return 권한
      */
     public Authentication getAuthentication(String accessToken) {
-        String username = getEmailByAccessToken(accessToken);
-        return new UsernamePasswordAuthenticationToken(username, "", List.of());
-    }
-
-    public String getEmailByAccessToken(String accessToken) {
-        return jwtParser.parseClaimsJws(accessToken).getBody().get(JwtProperties.EMAIL, String.class);
+        Long id = getId(accessToken);
+        String role = getRoleByAccessToken(accessToken);
+        return new UsernamePasswordAuthenticationToken(id, null,
+            List.of(new SimpleGrantedAuthority(role)));
     }
 
     public String getRoleByAccessToken(String accessToken) {
