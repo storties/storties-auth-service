@@ -1,16 +1,15 @@
-package storties.auth.stortiesauthservice.service;
+package storties.auth.stortiesauthservice.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import storties.auth.stortiesauthservice.application.service.util.JwtUtil;
 import storties.auth.stortiesauthservice.global.exception.error.ErrorCodes;
-import storties.auth.stortiesauthservice.global.exception.StortiesException;
 import storties.auth.stortiesauthservice.persistence.User;
 import storties.auth.stortiesauthservice.persistence.repository.UserJpaRepository;
-import storties.auth.stortiesauthservice.service.dto.request.AuthUserRequest;
-import storties.auth.stortiesauthservice.service.dto.response.AllTokenResponse;
-import storties.auth.stortiesauthservice.service.util.JwtUtil;
+import storties.auth.stortiesauthservice.application.service.dto.request.AuthUserRequest;
+import storties.auth.stortiesauthservice.application.service.dto.response.AllTokenResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +31,6 @@ public class LoginService {
             throw ErrorCodes.PASSWORD_MISMATCH.throwException();
         }
 
-        return jwtUtil.createAllToken(user.getId(), user.getEmail(), user.getRole());
+        return jwtUtil.createAllToken(user.getId(), user.getRole());
     }
 }

@@ -5,6 +5,12 @@ spring:
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: localhost # ${REDIS_HOST:localhost}
+      port: 6379 # ${REDIS_PORT:6379}
+      password: asdf # {REDIS_PASSWORD:asdf}
+
   jpa:
     open-in-view: false
     hibernate:
@@ -36,3 +42,6 @@ jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-expiration: 1800
   refresh-token-expiration: 1209600
+grpc:
+  server:
+    port: 9090

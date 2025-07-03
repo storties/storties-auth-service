@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.service.dto.response;
+package storties.auth.stortiesauthservice.application.service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

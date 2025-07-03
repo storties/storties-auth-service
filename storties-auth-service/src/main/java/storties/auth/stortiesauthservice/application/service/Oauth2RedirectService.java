@@ -1,4 +1,4 @@
-package storties.auth.stortiesauthservice.service;
+package storties.auth.stortiesauthservice.application.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
