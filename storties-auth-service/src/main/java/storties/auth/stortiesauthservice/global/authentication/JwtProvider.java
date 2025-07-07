@@ -33,7 +33,6 @@ public class JwtProvider {
     public Map<String, Object> createAccessToken(Long id, Role role) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtProperties.ROLE, String.valueOf(role));
-        claims.put(JwtProperties.ID, id);
         claims.put(JwtProperties.TOKEN_TYPE, String.valueOf(Token.ACCESS_TOKEN));
 
         SecretKey key = Keys.hmacShaKeyFor(jwtProperties.SECRET.getBytes());
@@ -44,9 +43,10 @@ public class JwtProvider {
 
         String token = Jwts.builder()
             .setSubject(String.valueOf(id))
-            .setClaims(claims)
+            .addClaims(claims)
             .setIssuedAt(now)
-            .setExpiration(exp).signWith(key)
+            .setExpiration(exp)
+            .signWith(key)
             .compact();
 
         Map<String, Object> response = new HashMap<>();
@@ -64,7 +64,6 @@ public class JwtProvider {
      */
     public Map<String, Object> createRefreshToken(Long id) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(JwtProperties.ID, id);
         claims.put(JwtProperties.TOKEN_TYPE, String.valueOf(Token.REFRESH_TOKEN));
         SecretKey key = Keys.hmacShaKeyFor(jwtProperties.SECRET.getBytes());
 
@@ -73,25 +72,17 @@ public class JwtProvider {
         Date exp = new Date(now.getTime() + validity);
 
         String refreshToken = Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(exp)
-                .signWith(key)
-                .compact();
+            .addClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(exp)
+            .signWith(key)
+            .compact();
 
         String redisKey = "RT:" + id;
         redisTemplate.opsForValue().set(redisKey, refreshToken, Duration.ofDays(14));
 
-        String token = Jwts
-                .builder()
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(exp)
-                .signWith(key)
-                .compact();
-
         Map<String, Object> response = new HashMap<>();
-        response.put(JwtProperties.TOKEN, token);
+        response.put(JwtProperties.TOKEN, refreshToken);
         response.put(JwtProperties.EXPIRES_IN, validity / 1000);
         response.put(JwtProperties.EXPIRES_AT, exp);
 
